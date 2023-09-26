@@ -1,68 +1,48 @@
-class Frame:
-    def __init__(self, rolls):
-        self.rolls = rolls
-        self.__next_frame = None
+import sys
 
-    @property
-    def next_frame(self):
-        return self.__next_frame
-
-    @next_frame.setter
-    def next_frame(self, frame):
-        self.__next_frame = frame
-
-    @property
-    def score(self):
+with sys.stdin as stdin:
+    line = stdin.readline()
+    while line != "Game Over\n":
+        rolls = line.split()
         score = 0
-        if self.rolls[0] == "X":
-            score += 10
-            if self.next_frame:
-                if self.next_frame.rolls[0] == "X":
-                    if self.next_frame.next_frame:
-                        score += 10 + (10 if self.next_frame.next_frame.rolls[0] == "X" else int(self.next_frame.next_frame.rolls[0]))
-                elif self.next_frame.rolls[1] == "/":
-                    score += 10
-                else:
-                    score += self.next_frame.score
-        elif self.rolls[1] == "/":
-            score += 10
-            if self.next_frame:
-                score += 10 if self.next_frame.rolls[0] == "X" else int(self.next_frame.rolls[0])
-        else:
-            score += int(self.rolls[0]) + int(self.rolls[1])
-        return score
+        frames = 0
+        i_ant = 20
+        for i in range(len(rolls)):
+            if frames == 10:
+                break
+            roll = rolls[i]
 
-    def __str__(self):
-        return str(self.rolls)
-
-
-def get_frames(data):
-    frames_obj = []
-    i = 0
-    while i < len(data):
-        if data[i] == "X":
-            frames_obj.append(Frame(("X",)))
-            i += 1
-        else:
-            if i + 1 >= len(data):
-                frames_obj.append(Frame((data[i:])))
+            if roll == "X":
+                score += 10
+                if i + 1 < len(rolls):
+                    if rolls[i+1] == "X":
+                        score += 10
+                        if i + 2 < len(rolls):
+                            if rolls[i+2] == "X":
+                                score += 10
+                            else:
+                                score += int(rolls[i+2])
+                    else:
+                        if rolls[i+2] == "/":
+                            score += 10
+                        else:
+                            score += int(rolls[i+1]) + int(rolls[i+2])
+                frames += 1
+            elif roll == "/":
+                score += 10 - int(rolls[i-1])
+                if i + 1 < len(rolls):
+                    if rolls[i+1] == "X":
+                        score += 10
+                    else:
+                        score += int(rolls[i+1])
+                frames += 1
             else:
-                frames_obj.append(Frame((data[i], data[i+1])))
-            i += 2
+                score += int(roll)
+                if i_ant == i-1:
+                    frames += 1
+                    i_ant = 0
+                else:
+                    i_ant = i
 
-        if len(frames_obj) > 1:
-            frames_obj[-2].next_frame = frames_obj[-1]
-
-    return frames_obj
-
-
-line = input()
-while line != "Game Over":
-    rolls = line.split()
-    score = 0
-    frames = get_frames(rolls)
-    for i, frame in enumerate(frames):
-        if i < 10:
-            score += frame.score
-    print(score)
-    line = input()
+        print(score)
+        line = stdin.readline()
