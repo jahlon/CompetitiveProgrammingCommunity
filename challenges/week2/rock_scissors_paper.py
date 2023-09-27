@@ -85,7 +85,6 @@ def get_new_state(grid, r, c, rows, cols):
 
 with sys.stdin as stdin:
     t = int(stdin.readline())
-    result = ""
     for i in range(t):
         rows, cols, n = map(int, stdin.readline().split())
         if rows == 0 or cols == 0:
@@ -112,4 +111,5 @@ with sys.stdin as stdin:
         for r in range(rows):
             print(grid[r])
 
-        print()
+        if i < t-1:
+            print()
