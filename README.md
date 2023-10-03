@@ -1,6 +1,6 @@
 # Ejercicios De la Comunidad de Programación Competitiva
 
-Para correr algún ejercicio con profiling, se debe ejecutar el siguiente comando:
+Para correr algún ejercicio con1| profiling, se debe ejecutar el siguiente comando:
 
 ```bash
 $ python -m cProfile -o <profile_output_file> <nombre_del_archivo>.py > output_file.txt
